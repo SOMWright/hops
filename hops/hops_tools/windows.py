@@ -1,9 +1,8 @@
-
 import os
 from tkinter import Tk, TclError
 from tkinter import Label, Button, Entry, Checkbutton, Scrollbar, Listbox, PhotoImage, Radiobutton, Scale, Frame
 from tkinter import StringVar, BooleanVar, DoubleVar, IntVar
-from tkinter import DISABLED, NORMAL, END, RIGHT, LEFT, BOTH, Y, HORIZONTAL
+from tkinter import DISABLED, NORMAL, END, RIGHT, LEFT, TOP, BOTTOM, BOTH, Y, HORIZONTAL
 
 from tkinter.ttk import Combobox, Style, Progressbar
 from tkinter.filedialog import askdirectory
@@ -14,7 +13,15 @@ try:
 except ImportError:
     from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2TkAgg
     NavigationToolbar2Tk = NavigationToolbar2TkAgg
-# NavigationToolbar2TkAgg
+
+import warnings
+warnings.filterwarnings(
+    'ignore', message='Matplotlib is building the font cache using fc-list. This may take a moment.')
+warnings.filterwarnings(
+    'ignore', message='The installed version of numexpr 2.4.4 is not supported in pandas and will be not be used')
+
+import matplotlib
+matplotlib.use('TkAgg')
 
 import webbrowser
 
@@ -33,7 +40,7 @@ def openweb_simbad(radec_string):
     return mock
 
 
-class HOPSWindow:
+class HOPSWindow():
 
     def __init__(self, name, sizex=None, sizey=None, position=5):
 
@@ -50,6 +57,17 @@ class HOPSWindow:
 
         self.running = self.BooleanVar(False)
         self.exit = False
+
+        self.DISABLED = DISABLED
+        self.NORMAL = NORMAL
+        self.END = END
+        self.RIGHT = RIGHT
+        self.LEFT = LEFT
+        self.TOP = TOP
+        self.BOTTOM = BOTTOM
+        self.BOTH = BOTH
+        self.Y = Y
+        self.HORIZONTAL = HORIZONTAL
 
     def exit_command(self):
         self.exit = True
@@ -147,6 +165,85 @@ class HOPSWindow:
         self.root.quit()
         self.root.destroy()
 
+    def update(self):
+
+        self.root.update()
+
+    def update_idletasks(self):
+
+        self.root.update_idletasks()
+
+    def after(self, *args):
+
+        self.root.after(*args)
+
+    def askdirectory(self):
+
+        return askdirectory()
+
+    def Figure(self, figsize=None, show_nav=False):
+
+        frame = Frame(self.root)
+
+        if figsize:
+            figure = matplotlib.figure.Figure(figsize=figsize)
+        else:
+            figure = matplotlib.figure.Figure()
+        figure.patch.set_facecolor('white')
+        canvas = FigureCanvasTkAgg(figure, frame)
+        canvas.get_tk_widget().pack(side=TOP)
+        if show_nav:
+            toolbar = NavigationToolbar2Tk(canvas, frame)
+            toolbar.pack(side=BOTTOM)
+
+        return figure, canvas, frame
+
+    def Label(self, *args, **kwargs):
+        return Label(self.root, *args, **kwargs)
+
+    def Entry(self, *args, **kwargs):
+        return Entry(self.root, *args, **kwargs)
+
+    def Button(self, *args, **kwargs):
+        return Button(self.root, *args, **kwargs)
+
+    def Checkbutton(self, *args, **kwargs):
+        return Checkbutton(self.root, *args, **kwargs)
+
+    def Scrollbar(self, *args, **kwargs):
+        return Scrollbar(self.root, *args, **kwargs)
+
+    def Listbox(self, *args, **kwargs):
+        return Listbox(self.root, *args, **kwargs)
+
+    def Radiobutton(self, *args, **kwargs):
+        return Radiobutton(self.root, *args, **kwargs)
+
+    def Scale(self, *args, **kwargs):
+        return Scale(self.root, *args, **kwargs)
+
+    def Combobox(self, *args, **kwargs):
+        return Combobox(self.root, *args, **kwargs)
+
+    def Style(self):
+        return Style()
+
+    def Progressbar(self):
+        return Progressbar(self.root, orient=HORIZONTAL, length=self.root.winfo_screenwidth() / 5.0,
+                           maximum=100, mode='determinate', value=0)
+
+    def StringVar(self, value):
+        return StringVar(self.root, value=value)
+
+    def BooleanVar(self, value):
+        return BooleanVar(self.root, value=value)
+
+    def DoubleVar(self, value):
+        return DoubleVar(self.root, value=value)
+
+    def IntVar(self, value):
+        return IntVar(self.root, value=value)
+
     def setup_window(self, objects, title_font='times', main_font='times', button_font='times', entries_wd=20, entries_bd=3, buttons_bd=5):
 
         # print(font.families())
@@ -183,92 +280,7 @@ class HOPSWindow:
                     else:
                         obj[0].grid(row=row, column=obj[1])
 
-    def update(self):
 
-        self.root.update()
-
-    def update_idletasks(self):
-
-        self.root.update_idletasks()
-
-    def after(self, *args):
-
-        self.root.after(*args)
-
-    def Label(self, *args, **kwargs):
-
-        return Label(self.root, *args, **kwargs)
-
-    def Entry(self, *args, **kwargs):
-
-        return Entry(self.root, *args, **kwargs)
-
-    def Button(self, *args, **kwargs):
-
-        return Button(self.root, *args, **kwargs)
-
-    def Checkbutton(self, *args, **kwargs):
-
-        return Checkbutton(self.root, *args, **kwargs)
-
-    def Scrollbar(self, *args, **kwargs):
-
-        return Scrollbar(self.root, *args, **kwargs)
-
-    def Listbox(self, *args, **kwargs):
-
-        return Listbox(self.root, *args, **kwargs)
-
-    def Radiobutton(self, *args, **kwargs):
-
-        return Radiobutton(self.root, *args, **kwargs)
-
-    def Scale(self, *args, **kwargs):
-
-        return Scale(self.root, *args, **kwargs)
-
-    def Combobox(self, *args, **kwargs):
-
-        return Combobox(self.root, *args, **kwargs)
-
-    def Style(self):
-
-        return Style()
-
-    def Progressbar(self):
-
-        return Progressbar(self.root, orient=HORIZONTAL, length=self.root.winfo_screenwidth() / 5.0,
-                           maximum=100, mode='determinate', value=0)
-
-    def Frame(self, *args, **kwargs):
-
-        return Frame(self.root, *args, **kwargs)
-
-    def FigureCanvasTkAgg(self, figure):
-        return FigureCanvasTkAgg(figure, self.root)
-
-    def NavigationToolbar2Tk(self, canvas):
-        return NavigationToolbar2Tk(canvas, self.root)
-
-    def StringVar(self, value):
-
-        return StringVar(self.root, value=value)
-
-    def BooleanVar(self, value):
-
-        return BooleanVar(self.root, value=value)
-
-    def DoubleVar(self, value):
-
-        return DoubleVar(self.root, value=value)
-
-    def IntVar(self, value):
-
-        return IntVar(self.root, value=value)
-
-    def askdirectory(self):
-
-        return askdirectory()
 
 
 class MainWindow(HOPSWindow):
@@ -372,43 +384,3 @@ class ProfileWindow(AddOnWindow):
         stucture.append([])
 
         self.setup_window(stucture)
-
-
-def setup_window(window, objects, title_font=None, main_font=None, button_font=None, entries_bd=3, buttons_bd=5):
-    screenheigth = window.winfo_screenheight()
-
-    if button_font is None:
-        button_font = ['times', int(screenheigth/55), 'bold']
-
-    if main_font is None:
-        main_font = ['times', int(screenheigth/60)]
-
-    if title_font is None:
-        title_font = ['times', int(screenheigth/40), 'bold']
-
-    for row in range(len(objects)):
-        if len(objects[row]) == 0:
-            label_empty = Label(window, text='')
-            label_empty.grid(row=row, column=100)
-        else:
-            for obj in objects[row]:
-
-                if obj[0].winfo_class() == 'Button':
-                    obj[0].config(borderwidth=buttons_bd, font=button_font, padx=3, pady=3)
-                elif obj[0].winfo_class() == 'Entry':
-                    obj[0].configure(bd=entries_bd, font=main_font)
-                elif obj[0].winfo_class() in ['Label', 'Radiobutton']:
-                    if len(obj) == 5:
-                        if obj[4] == 'title':
-                            obj[0].configure(font=title_font)
-                        else:
-                            obj[0].configure(font=main_font)
-                    else:
-                        obj[0].configure(font=main_font)
-
-                if len(obj) >= 4:
-                    obj[0].grid(row=row, column=obj[1], columnspan=obj[2], rowspan=obj[3])
-                elif len(obj) == 3:
-                    obj[0].grid(row=row, column=obj[1], columnspan=obj[2])
-                else:
-                    obj[0].grid(row=row, column=obj[1])

@@ -1,201 +1,13 @@
 
-
-import sys
-
-
-from tkinter import Tk, TclError
-from tkinter import Label, Button, Entry, Checkbutton, Scrollbar, Listbox, PhotoImage, Radiobutton, Scale, Frame
-from tkinter import StringVar, BooleanVar, DoubleVar, IntVar
-from tkinter import DISABLED, NORMAL, END, RIGHT, LEFT, BOTH, Y, HORIZONTAL
-from tkinter.ttk import Combobox, Style, Progressbar
-
-import tkinter.ttk as ttk
-import tkinter.filedialog as tkFileDialog
-from tkinter.messagebox import *
-from urllib.request import urlopen
-
-import warnings
-warnings.filterwarnings(
-    'ignore', message='Matplotlib is building the font cache using fc-list. This may take a moment.')
-warnings.filterwarnings(
-    'ignore', message='The installed version of numexpr 2.4.4 is not supported in pandas and will be not be used')
-
-import matplotlib
-matplotlib.use('TkAgg')
-
 import datetime
-import os
-import sys
-import glob
-import time
-import yaml
 import numpy as np
-import shutil
-import hops.pylightcurve3 as plc
-import matplotlib.cm as cm
-import matplotlib.patches as mpatches
-import matplotlib.patches as mpatch
-
-from astropy.io import fits as pf
-from scipy.optimize import curve_fit
-from matplotlib.figure import Figure
-from matplotlib.offsetbox import AnchoredText
-from matplotlib.backend_bases import key_press_handler, MouseEvent
-import matplotlib.gridspec as gridspec
-try:
-    from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
-    NavigationToolbar2TkAgg = NavigationToolbar2Tk
-except ImportError:
-    from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2TkAgg
-from matplotlib.backend_bases import FigureCanvasBase
-import matplotlib.image as mpimg
-
 from astroquery.simbad import Simbad
-import requests
-from astropy import units as u
-from astropy.time import Time
-from astropy.coordinates import SkyCoord, EarthLocation
 
-import tkinter.scrolledtext as scrolledtext
+import hops.pylightcurve3 as plc
 
-import webbrowser
-
-from hops.hops_tools.windows import MainWindow, AddOnWindow, SideWindow, setup_window
-
+from hops.hops_tools.windows import *
 from hops.hops_tools.logs import log
 from hops.hops_tools.tests import *
-#
-#
-# def initialise_window(window, window_name, windows_to_hide, windows_to_close, exit_python):
-#
-#     def exit_command():
-#
-#         for i in windows_to_close:
-#             i.destroy()
-#
-#         for i in windows_to_hide:
-#             i.withdraw()
-#
-#         if exit_python:
-#             os._exit(-1)
-#
-#     window.wm_title(window_name)
-#     window.protocol('WM_DELETE_WINDOW', exit_command)
-#
-#     window.withdraw()
-#
-#
-# def setup_window(window, objects, main_font=None, button_font=None, entries_bd=3):
-#
-#     if button_font is None:
-#         button_font = ['times', 15, 'bold']
-#
-#     if main_font is None:
-#         main_font = ['times', 15]
-#
-#     for row in range(len(objects)):
-#         if len(objects[row]) == 0:
-#             label_empty = Label(window, text='')
-#             label_empty.grid(row=row, column=100)
-#         else:
-#             for obj in objects[row]:
-#
-#                 if obj[0].winfo_class() == 'Button':
-#                     obj[0].configure(font=button_font)
-#                 elif obj[0].winfo_class() == 'Entry':
-#                     obj[0].configure(bd=entries_bd, font=main_font)
-#                 elif obj[0].winfo_class() in ['Label', 'Radiobutton']:
-#                     obj[0].configure(font=main_font)
-#
-#                 if len(obj) == 4:
-#                     obj[0].grid(row=row, column=obj[1], columnspan=obj[2], rowspan=obj[3])
-#                 elif len(obj) == 3:
-#                     obj[0].grid(row=row, column=obj[1], columnspan=obj[2])
-#                 else:
-#                     obj[0].grid(row=row, column=obj[1])
-#
-#
-# def finalise_window(window, position=5, topmost=False):
-#
-#     window.update_idletasks()
-#
-#     if position == 1:
-#         x = 0
-#         y = 0
-#
-#     elif position == 2:
-#         x = (window.winfo_screenwidth() - window.winfo_reqwidth()) / 2
-#         y = 0
-#
-#     elif position == 3:
-#         x = window.winfo_screenwidth() - window.winfo_reqwidth()
-#         y = 0
-#
-#     elif position == 4:
-#         x = 0
-#         y = (window.winfo_screenheight() - window.winfo_reqheight()) / 2
-#
-#     elif position == 5:
-#         x = (window.winfo_screenwidth() - window.winfo_reqwidth()) / 2
-#         y = (window.winfo_screenheight() - window.winfo_reqheight()) / 2
-#
-#     elif position == 6:
-#         x = window.winfo_screenwidth() - window.winfo_reqwidth()
-#         y = (window.winfo_screenheight() - window.winfo_reqheight()) / 2
-#
-#     elif position == 7:
-#         x = 0
-#         y = window.winfo_screenheight() - window.winfo_reqheight()
-#
-#     elif position == 8:
-#         x = (window.winfo_screenwidth() - window.winfo_reqwidth()) / 2
-#         y = window.winfo_screenheight() - window.winfo_reqheight()
-#
-#     elif position == 9:
-#         x = window.winfo_screenwidth() - window.winfo_reqwidth()
-#         y = window.winfo_screenheight() - window.winfo_reqheight()
-#
-#     else:
-#         x = 0
-#         y = 0
-#
-#     window.geometry('+%d+%d' % (x, y))
-#
-#     window.update_idletasks()
-#
-#     window.lift()
-#     window.wm_attributes("-topmost", 1)
-#     if not topmost:
-#         window.after_idle(window.attributes, '-topmost', 0)
-#
-#     window.deiconify()
-#
-#
-# def test_float_positive_input(input_str, typing):
-#
-#     if typing == '1':
-#         try:
-#             if float(input_str) >= 0:
-#                 return True
-#             else:
-#                 return False
-#         except ValueError:
-#             return False
-#
-#     else:
-#         return True
-#
-#
-
-def test_coordinates2(ra_string, dec_string):
-
-    try:
-        coord = plc.Target(plc.Hours(ra_string), plc.Degrees(dec_string))
-        return [True, 'Coordinates\naccepted']
-    except:
-        return [False, 'Wrong\ncoordinates']
-
-
 
 
 class ObservingPlanner(AddOnWindow):
@@ -204,151 +16,90 @@ class ObservingPlanner(AddOnWindow):
     
         AddOnWindow.__init__(self, 'Observing Planner')
     
-        self.frame1 = self.Frame()
-        self.frame1.pack(side=LEFT)
-
-    
         # get variables from log and set as tk variables those to be modified
     
-        self.object_search = StringVar(self.frame1, value='Orion nebula')
-        self.skyobject = StringVar(self.frame1, value=' ')
-        self.target_ra = StringVar(self.frame1, value=' ')
-        self.target_dec = StringVar(self.frame1, value=' ')
+        self.target = self.StringVar(' ')
+        self.target_search = self.StringVar('Orion nebula')
+        self.target_ra = self.StringVar(' ')
+        self.target_dec = self.StringVar(' ')
         now = datetime.datetime.now()
-        self.obs_year_month = StringVar(self.frame1, value='{0} {1}'.format(now.year, str(now.month).zfill(2)))
-        self.latitude = StringVar(self.frame1, value=log.read_local_log_profile('observatory_lat'))
-        self.longitude = StringVar(self.frame1, value=log.read_local_log_profile('observatory_long'))
-        self.horizon_s = StringVar(self.frame1, value=log.read_local_log_profile('observatory_horizon_s'))
-        self.horizon_sw = StringVar(self.frame1, value=log.read_local_log_profile('observatory_horizon_sw'))
-        self.horizon_w = StringVar(self.frame1, value=log.read_local_log_profile('observatory_horizon_w'))
-        self.horizon_nw = StringVar(self.frame1, value=log.read_local_log_profile('observatory_horizon_nw'))
-        self.horizon_n = StringVar(self.frame1, value=log.read_local_log_profile('observatory_horizon_n'))
-        self.horizon_ne = StringVar(self.frame1, value=log.read_local_log_profile('observatory_horizon_ne'))
-        self.horizon_e = StringVar(self.frame1, value=log.read_local_log_profile('observatory_horizon_e'))
-        self.horizon_se = StringVar(self.frame1, value=log.read_local_log_profile('observatory_horizon_se'))
-        self.observatory = StringVar(self.frame1, value=log.read_local_log_profile('observatory'))
-        self.timezone = IntVar(self.frame1, value=log.read_local_log_profile('observatory_time_zone'))
-    
-        # set progress variables, useful for updating the window
-    
-        self.update_object = BooleanVar(self.frame1, value=True)
-        self.update_object_list = BooleanVar(self.frame1, value=True)
-    
-        # create the plot in the additional window
-    
-        # figure = matplotlib.figure.Figure()
-        figure = matplotlib.figure.Figure(figsize=(6, 7))
-        figure.patch.set_facecolor('white')
-        self.ax1 = figure.add_subplot(111)
-        figure.subplots_adjust(left=0.1, right=1-0.05, bottom=0.1, top=0.85)
-        self.canvas = self.FigureCanvasTkAgg(figure)
-        self.canvas.get_tk_widget().pack(side=RIGHT)
-        # self.NavigationToolbar2Tk(self.canvas)
-    
-        # create widgets
-    
-        self.observatory_label = Label(self.frame1, text='Observatory')
-        self.observatory_entry = Entry(self.frame1, textvariable=self.observatory, width=30)
-    
-        self.latitude_label = Label(self.frame1, text='Latitude')
-        self.latitude_entry = Entry(self.frame1, textvariable=self.latitude)
-    
-        self.longitude_label = Label(self.frame1, text='Longitude')
-        self.longitude_entry = Entry(self.frame1, textvariable=self.longitude)
-    
-        self.horizon_s_label = Label(self.frame1, text='Horizon altitude S (deg)')
-        self.horizon_s_entry = Entry(self.frame1, textvariable=self.horizon_s, width=10)
-    
-        self.horizon_sw_label = Label(self.frame1, text='Horizon altitude SW (deg)')
-        self.horizon_sw_entry = Entry(self.frame1, textvariable=self.horizon_sw, width=10)
-    
-        self.horizon_w_label = Label(self.frame1, text='Horizon altitude W (deg)')
-        self.horizon_w_entry = Entry(self.frame1, textvariable=self.horizon_w, width=10)
-    
-        self.horizon_nw_label = Label(self.frame1, text='Horizon altitude NW (deg)')
-        self.horizon_nw_entry = Entry(self.frame1, textvariable=self.horizon_nw, width=10)
-    
-        self.horizon_n_label = Label(self.frame1, text='Horizon altitude N (deg)')
-        self.horizon_n_entry = Entry(self.frame1, textvariable=self.horizon_n, width=10)
-    
-        self.horizon_ne_label = Label(self.frame1, text='Horizon altitude NE (deg)')
-        self.horizon_ne_entry = Entry(self.frame1, textvariable=self.horizon_ne, width=10)
-    
-        self.horizon_e_label = Label(self.frame1, text='Horizon altitude E (deg)')
-        self.horizon_e_entry = Entry(self.frame1, textvariable=self.horizon_e, width=10)
-    
-        self.horizon_se_label = Label(self.frame1, text='Horizon altitude SE (deg)')
-        self.horizon_se_entry = Entry(self.frame1, textvariable=self.horizon_se, width=10)
-    
-        self.timezone_label = Label(self.frame1, text='Time Zone')
-        self.timezone_entry = Entry(self.frame1, textvariable=self.timezone)
-    
-        self.target_ra_dec_label = Label(self.frame1, text='Manual target RA DEC\n(hh:mm:ss +/-dd:mm:ss)')
-        self.target_ra_entry = Entry(self.frame1, textvariable=self.target_ra, width=30)
-        self.target_ra_entry.bind(sequence='<KeyRelease>', func=self.update_window)
-        self.target_dec_entry = Entry(self.frame1, textvariable=self.target_dec, width=30)
-        self.target_dec_entry.bind(sequence='<KeyRelease>', func=self.update_window)
-        self.target_ra_dec_test = Label(self.frame1, text=' ')
-    
-        self.obs_year_month_label = Label(self.frame1, text='Observation year and month\n(yyyy mm)')
-        self.obs_year_month_entry = Entry(self.frame1, textvariable=self.obs_year_month, width=30)
-        self.obs_year_month_test = Label(self.frame1, text=' ')
-    
-        self.object_label = Label(self.frame1, text='     Object     ')
-        self.object_search_entry = Entry(self.frame1, textvariable=self.object_search)
-        combostyle = self.Style()
-        try:
-            combostyle.theme_create('combostyle', parent='alt',
-                                settings={'TCombobox': {'configure':
-                                                        {'selectbackground': 'white',
-                                                         'fieldbackground': 'white',
-                                                         'background': 'white'}}})
-        except:
-            pass
-    
-        combostyle.theme_use('combostyle')
-        self.object_entry = Combobox(self.frame1, textvariable=self.skyobject, state='readonly')
-    
-        self.search_object_button = Button(self.frame1, text='SEARCH')
-    
-        self.plot_button = Button(self.frame1, text='RESET PLOT')
-    
-        self.exit_avc_button = Button(self.frame1, text='EXIT')
+        self.obs_year_month = self.StringVar('{0} {1}'.format(now.year, str(now.month).zfill(2)))
+        self.latitude = self.StringVar(log.read_local_log_profile('observatory_lat'))
+        self.longitude = self.StringVar(log.read_local_log_profile('observatory_long'))
+        self.horizon_s = self.StringVar(log.read_local_log_profile('observatory_horizon_s'))
+        self.horizon_sw = self.StringVar(log.read_local_log_profile('observatory_horizon_sw'))
+        self.horizon_w = self.StringVar(log.read_local_log_profile('observatory_horizon_w'))
+        self.horizon_nw = self.StringVar(log.read_local_log_profile('observatory_horizon_nw'))
+        self.horizon_n = self.StringVar(log.read_local_log_profile('observatory_horizon_n'))
+        self.horizon_ne = self.StringVar(log.read_local_log_profile('observatory_horizon_ne'))
+        self.horizon_e = self.StringVar(log.read_local_log_profile('observatory_horizon_e'))
+        self.horizon_se = self.StringVar(log.read_local_log_profile('observatory_horizon_se'))
+        self.observatory = self.StringVar(log.read_local_log_profile('observatory'))
+        self.timezone = self.IntVar(log.read_local_log_profile('observatory_time_zone'))
 
-        self.object_entry.bind('<<ComboboxSelected>>', self.choose_object)
-        self.search_object_button['command'] = self.search_object
-        self.plot_button['command'] = self.plot
+        # create widgets
+
+        self.figure, self.canvas, figure_frame = self.Figure(figsize=(6, 6), show_nav=True)
+        self.ax1 = self.figure.add_subplot(111)
+        self.figure.subplots_adjust(left=0.1, right=1-0.05, bottom=0.1, top=0.85)
+
+        self.target_ra_entry = self.Entry(textvariable=self.target_ra, width=30)
+        self.target_ra_entry.bind(sequence='<KeyRelease>', func=self.update_window)
+        self.target_dec_entry = self.Entry(textvariable=self.target_dec, width=30)
+        self.target_dec_entry.bind(sequence='<KeyRelease>', func=self.update_window)
+        self.target_ra_dec_test = self.StringVar(' ')
+
+        self.obs_year_month_entry = self.Entry(textvariable=self.obs_year_month, width=30)
+        self.obs_year_month_entry.bind(sequence='<KeyRelease>', func=self.update_window)
+        self.obs_year_month_test = self.StringVar(' ')
+    
+        self.plot_button = self.Button(text='RESET PLOT', command=self.plot)
 
         # setup window
 
-        setup_window(self.frame1, [
+        self.setup_window([
+            [[figure_frame, 4, 1, 30]],
+            [[self.Label(text='Observatory'), 2]],
+            [[self.Entry(textvariable=self.observatory, width=30), 2]],
             [],
-            [[self.observatory_label, 2]],
-            [[self.observatory_entry, 2]],
+            [[self.Label(text='Latitude'), 1],
+             [self.Label(text='Horizon altitude S (deg)'), 2],
+             [self.Entry(textvariable=self.horizon_s, width=10), 3]],
+            [[self.Entry(textvariable=self.latitude), 1],
+             [self.Label(text='Horizon altitude SW (deg)'), 2],
+             [self.Entry(textvariable=self.horizon_sw, width=10), 3]],
+            [[self.Label(text='Horizon altitude W (deg)'), 2],
+             [self.Entry(textvariable=self.horizon_w, width=10), 3]],
+            [[self.Label(text='Longitude'), 1],
+             [self.Label(text='Horizon altitude NW (deg)'), 2],
+             [self.Entry(textvariable=self.horizon_nw, width=10), 3]],
+            [[self.Entry(textvariable=self.longitude), 1],
+             [self.Label(text='Horizon altitude N (deg)'), 2],
+             [self.Entry(textvariable=self.horizon_n, width=10), 3]],
+            [[self.Label(text='Horizon altitude NE (deg)'), 2],
+             [self.Entry(textvariable=self.horizon_ne, width=10), 3]],
+            [[self.Label(text='Time Zone'), 1],
+             [self.Label(text='Horizon altitude E (deg)'), 2],
+             [self.Entry(textvariable=self.horizon_e, width=10), 3]],
+            [[self.Entry(textvariable=self.timezone), 1],
+             [self.Label(text='Horizon altitude SE (deg)'), 2],
+             [self.Entry(textvariable=self.horizon_se, width=10), 3]],
             [],
-            [[self.latitude_label, 1], [self.horizon_s_label, 2], [self.horizon_s_entry, 3]],
-            [[self.latitude_entry, 1], [self.horizon_sw_label, 2], [self.horizon_sw_entry, 3]],
-            [[self.horizon_w_label, 2], [self.horizon_w_entry, 3]],
-            [[self.longitude_label, 1], [self.horizon_nw_label, 2], [self.horizon_nw_entry, 3]],
-            [[self.longitude_entry, 1], [self.horizon_n_label, 2], [self.horizon_n_entry, 3]],
-            [[self.horizon_ne_label, 2], [self.horizon_ne_entry, 3]],
-            [[self.timezone_label, 1], [self.horizon_e_label, 2], [self.horizon_e_entry, 3]],
-            [[self.timezone_entry, 1], [self.horizon_se_label, 2], [self.horizon_se_entry, 3]],
+            [[self.Label(text='Object'), 1]],
+            [[self.Entry(textvariable=self.target_search), 1],
+             [self.Button(text='SEARCH RA/DEC', command=self.search_object), 2], [self.Label(textvar=self.target), 3]],
             [],
-            [[self.object_label, 1]],
-            [[self.object_search_entry, 1], [self.object_entry, 2]],
-            [[self.search_object_button, 1]],
-            [],
-            [[self.target_ra_dec_label, 1], [self.target_ra_entry, 2], [self.target_ra_dec_test, 3]],
+            [[self.Label(text='Manual target RA DEC\n(hh:mm:ss +/-dd:mm:ss)'), 1, 1, 2], [self.target_ra_entry, 2],
+             [self.Label(textvar=self.target_ra_dec_test), 3, 1, 2]],
             [[self.target_dec_entry, 2]],
-            [[self.obs_year_month_label, 1], [self.obs_year_month_entry, 2], [self.obs_year_month_test, 3]],
+            [[self.Label(text='Observation year and month\n(yyyy mm)'), 1], [self.obs_year_month_entry, 2],
+             [self.Label(textvar=self.obs_year_month_test), 3]],
             [],
             [[self.plot_button, 2]],
             [],
         ])
 
-        self.update_window()
-        self.plot()
+        self.search_object()
 
     # define the function that updates the window
 
@@ -357,64 +108,36 @@ class ObservingPlanner(AddOnWindow):
         if not event:
             pass
 
-        if self.update_object_list.get():
-
-            try:
-                result_table = Simbad.query_object(self.object_search.get(), wildcard=True)
-
-                if result_table:
-                    self.object_entry['values'] = tuple([str(ff['MAIN_ID'])[2:-1] for ff in result_table])
-                else:
-                    self.object_entry['values'] = tuple([])
-
-                if len(self.object_entry['values']) == 1:
-                    self.skyobject.set(self.object_entry['values'][0])
-                    self.update_object.set(True)
-                else:
-                    self.skyobject.set('Choose Object')
-
-            except requests.exceptions.ConnectionError:
-                self.skyobject.set('No connection')
-
-            self.update_object_list.set(False)
-
-        if self.update_object.get():
-
-            try:
-                result_table = Simbad.query_object(self.skyobject.get())[0]
-                self.target_ra.set(str(result_table['RA']))
-                self.target_dec.set(str(result_table['DEC']))
-
-            except requests.exceptions.ConnectionError:
-                self.target_ra.set('Import manually')
-                self.target_dec.set('Import manually')
-                self.skyobject.set('No connection')
-
-            self.update_object.set(False)
-
-        self.object_entry.selection_clear()
-
         check_ra_dec = test_coordinates2(self.target_ra_entry.get(), self.target_dec_entry.get())
-        self.target_ra_dec_test.configure(text=check_ra_dec[1])
+        self.target_ra_dec_test.set(check_ra_dec[1])
         check_year_month = test_date(self.obs_year_month_entry.get())
-        self.obs_year_month_test.configure(text=check_year_month[1])
+        self.obs_year_month_test.set(check_year_month[1])
 
         if check_ra_dec[0] and check_year_month[0]:
-            self.plot_button['state'] = NORMAL
+            self.plot_button['state'] = self.NORMAL
         else:
-            self.plot_button['state'] = DISABLED
-
-    def choose_object(self, entry):
-
-        if not entry:
-            return 0
-
-        self.update_object.set(True)
-        self.update_window()
+            self.plot_button['state'] = self.DISABLED
 
     def search_object(self):
 
-        self.update_object_list.set(True)
+        try:
+            result_table = Simbad.query_object(self.target_search.get(), wildcard=True)[0]
+
+            if result_table:
+                self.target.set(result_table['MAIN_ID'].decode("utf-8"))
+                self.target_ra.set(str(result_table['RA']))
+                self.target_dec.set(str(result_table['DEC']))
+            else:
+                self.target_ra.set('')
+                self.target_dec.set('')
+                self.target.set('No results')
+
+        except:
+            self.target_ra.set('')
+            self.target_dec.set('')
+            self.target.set('No results')
+
+        self.plot()
         self.update_window()
 
     def plot(self):
@@ -422,19 +145,19 @@ class ObservingPlanner(AddOnWindow):
 
         try:
             self.avc_plot(self.latitude.get(), self.longitude.get(), self.timezone.get(),
-                     [
-                         [0, self.horizon_s.get()],
-                         [45, self.horizon_sw.get()],
-                         [90, self.horizon_w.get()],
-                         [135, self.horizon_nw.get()],
-                         [180, self.horizon_n.get()],
-                         [225, self.horizon_ne.get()],
-                         [270, self.horizon_e.get()],
-                         [315, self.horizon_se.get()],
+                          [
+                              [0, self.horizon_s.get()],
+                              [45, self.horizon_sw.get()],
+                              [90, self.horizon_w.get()],
+                              [135, self.horizon_nw.get()],
+                              [180, self.horizon_n.get()],
+                              [225, self.horizon_ne.get()],
+                              [270, self.horizon_e.get()],
+                              [315, self.horizon_se.get()],
 
-                     ],
-                     self.target_ra.get(), self.target_dec.get(), self.obs_year_month.get(), self.ax1, self.skyobject.get(),
-                     self.observatory.get())
+                         ],
+                         self.target_ra.get(), self.target_dec.get(), self.obs_year_month.get(), self.ax1,
+                         self.target.get(), self.observatory.get())
 
         except:
             pass
@@ -494,7 +217,6 @@ class ObservingPlanner(AddOnWindow):
 
         def target_horizon_diference(x, st):
             return sidereal_time_altitude_function(st)
-
 
         # find events
 
@@ -710,11 +432,3 @@ class ObservingPlanner(AddOnWindow):
                 ax.text(time_range[0] + shift[align], day + 0.4,
                         'rise: ' + (ii[1].utc + datetime.timedelta(days=tmzn / 24)).isoformat().split('T')[1][:5],
                         va='center', ha=align, fontsize=9)
-
-
-
-
-
-
-
-

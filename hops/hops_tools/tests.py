@@ -1,13 +1,13 @@
 
 __all__ = ['find_fits_files', 'test_fits_keyword', 'test_coordinates', 'test_file_number', 'test_float_input',
            'test_float_positive_input', 'test_int_input', 'test_int_positive_input', 'test_int_positive_non_zero_input',
-           'test_date', 'filter_map']
+           'test_date', 'filter_map', 'TclError', 'test_coordinates2']
 
 import numpy as np
 import glob
 import hops.pylightcurve3 as plc
 from astropy.io import fits as pf
-
+from tkinter import TclError as TclError
 
 def find_fits_files(fits_file):
 
@@ -184,6 +184,7 @@ def test_date(year_month_string):
     else:
         return [False, 'Wrong\ndate']
 
+
 filter_map = {'Clear': 'V', 'Luminance': 'V',
               'U': 'U', 'B': 'B', 'V': 'V', 'R': 'R', 'I': 'I', 'H': 'H', 'J': 'J', 'K': 'K',
               'u': 'u', 'b': 'b', 'v': 'v', 'y': 'y',
@@ -191,4 +192,14 @@ filter_map = {'Clear': 'V', 'Luminance': 'V',
               'Astrodon ExoPlanet-BB': 'R',
               'UV': 'U', 'Rc': 'R', 'Ic': 'I', 'Re': 'R', 'Ie': 'I', 'Y': 'y,', 'r': 'r,', 'z': 'z,', 'i': 'i,',
               }
+
+
+def test_coordinates2(ra_string, dec_string):
+
+    try:
+        coord = plc.Target(plc.Hours(ra_string), plc.Degrees(dec_string))
+        return [True, 'Coordinates\naccepted']
+    except:
+        return [False, 'Wrong\ncoordinates']
+
 

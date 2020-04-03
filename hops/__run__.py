@@ -24,14 +24,7 @@ import matplotlib.gridspec as gridspec
 import hops.pylightcurve3 as plc
 from urllib.request import urlopen
 
-
-from tkinter import Tk, TclError
-from tkinter import Label, Button, Scale
-from tkinter import DISABLED, NORMAL, END, RIGHT, LEFT, BOTH, Y, HORIZONTAL, StringVar
-from tkinter.messagebox import showinfo
-
-from hops.hops_tools.windows import MainWindow, AddOnWindow, SideWindow, setup_window, openweb_simbad
-from hops.hops_tools.logs import log
+from hops.hops_tools.windows import *
 from hops.hops_tools.tests import *
 from hops.hops_tools.observing_planner import ObservingPlanner
 
@@ -39,7 +32,6 @@ from .reduction_routines import reduction as rdr_reduction
 from .alignment_routines import alignment as alr_alignment
 from .photometry_routines import photometry as phr_photometry
 from .fitting_routines import fitting as ftr_fitting
-
 
 
 class ReductionWindow(MainWindow):
@@ -183,15 +175,15 @@ class ReductionWindow(MainWindow):
         # set variables, create and place widgets, side windows
 
         scrollbar = self.show_content_window.Scrollbar()
-        scrollbar.pack(side=RIGHT, fill=Y)
+        scrollbar.pack(side=self.RIGHT, fill=self.Y)
         self.files_list = self.show_content_window.Listbox(yscrollcommand=scrollbar.set, font='Courier')
-        self.files_list.pack(side=LEFT, fill=BOTH, expand=True)
+        self.files_list.pack(side=self.LEFT, fill=self.BOTH, expand=True)
         scrollbar.config(command=self.files_list.yview)
 
         scrollbar = self.show_header_window.Scrollbar()
-        scrollbar.pack(side=RIGHT, fill=Y)
+        scrollbar.pack(side=self.RIGHT, fill=self.Y)
         self.header_list = self.show_header_window.Listbox(yscrollcommand=scrollbar.set, font='Courier')
-        self.header_list.pack(side=LEFT, fill=BOTH, expand=True)
+        self.header_list.pack(side=self.LEFT, fill=self.BOTH, expand=True)
         scrollbar.config(command=self.header_list.yview)
 
         # run
@@ -212,51 +204,51 @@ class ReductionWindow(MainWindow):
 
         if self.running.get():
 
-            self.directory_entry['state'] = DISABLED
-            self.observation_files_entry['state'] = DISABLED
-            self.bias_files_entry['state'] = DISABLED
-            self.dark_files_entry['state'] = DISABLED
-            self.flat_files_entry['state'] = DISABLED
-            self.bin_fits_entry['state'] = DISABLED
-            self.show_files_button['state'] = DISABLED
-            self.exposure_time_key_entry['state'] = DISABLED
-            self.observation_date_key_entry['state'] = DISABLED
-            self.observation_time_key_entry['state'] = DISABLED
-            self.target_ra_dec_entry['state'] = DISABLED
-            self.use_auto_target_ra_dec_entry['state'] = DISABLED
-            self.mid_exposure_entry['state'] = DISABLED
-            self.show_header_button['state'] = DISABLED
-            self.run_reduction_alignment_button['state'] = DISABLED
-            self.proceed_to_photometry_button['state'] = DISABLED
-            self.proceed_to_fitting_button['state'] = DISABLED
-            self.observing_planner_button['state'] = DISABLED
-            self.my_profile_button['state'] = DISABLED
+            self.directory_entry['state'] = self.DISABLED
+            self.observation_files_entry['state'] = self.DISABLED
+            self.bias_files_entry['state'] = self.DISABLED
+            self.dark_files_entry['state'] = self.DISABLED
+            self.flat_files_entry['state'] = self.DISABLED
+            self.bin_fits_entry['state'] = self.DISABLED
+            self.show_files_button['state'] = self.DISABLED
+            self.exposure_time_key_entry['state'] = self.DISABLED
+            self.observation_date_key_entry['state'] = self.DISABLED
+            self.observation_time_key_entry['state'] = self.DISABLED
+            self.target_ra_dec_entry['state'] = self.DISABLED
+            self.use_auto_target_ra_dec_entry['state'] = self.DISABLED
+            self.mid_exposure_entry['state'] = self.DISABLED
+            self.show_header_button['state'] = self.DISABLED
+            self.run_reduction_alignment_button['state'] = self.DISABLED
+            self.proceed_to_photometry_button['state'] = self.DISABLED
+            self.proceed_to_fitting_button['state'] = self.DISABLED
+            self.observing_planner_button['state'] = self.DISABLED
+            self.my_profile_button['state'] = self.DISABLED
 
         elif not os.path.isdir(self.directory.get()):
 
-            self.directory_entry['state'] = NORMAL
-            self.observation_files_entry['state'] = DISABLED
-            self.bias_files_entry['state'] = DISABLED
-            self.dark_files_entry['state'] = DISABLED
-            self.flat_files_entry['state'] = DISABLED
-            self.bin_fits_entry['state'] = DISABLED
-            self.show_files_button['state'] = DISABLED
-            self.exposure_time_key_entry['state'] = DISABLED
-            self.observation_date_key_entry['state'] = DISABLED
-            self.observation_time_key_entry['state'] = DISABLED
-            self.target_ra_dec_entry['state'] = DISABLED
-            self.use_auto_target_ra_dec_entry['state'] = DISABLED
-            self.mid_exposure_entry['state'] = DISABLED
-            self.show_header_button['state'] = DISABLED
-            self.run_reduction_alignment_button['state'] = DISABLED
-            self.proceed_to_photometry_button['state'] = DISABLED
-            self.proceed_to_fitting_button['state'] = DISABLED
-            self.observing_planner_button['state'] = NORMAL
-            self.my_profile_button['state'] = NORMAL
+            self.directory_entry['state'] = self.NORMAL
+            self.observation_files_entry['state'] = self.DISABLED
+            self.bias_files_entry['state'] = self.DISABLED
+            self.dark_files_entry['state'] = self.DISABLED
+            self.flat_files_entry['state'] = self.DISABLED
+            self.bin_fits_entry['state'] = self.DISABLED
+            self.show_files_button['state'] = self.DISABLED
+            self.exposure_time_key_entry['state'] = self.DISABLED
+            self.observation_date_key_entry['state'] = self.DISABLED
+            self.observation_time_key_entry['state'] = self.DISABLED
+            self.target_ra_dec_entry['state'] = self.DISABLED
+            self.use_auto_target_ra_dec_entry['state'] = self.DISABLED
+            self.mid_exposure_entry['state'] = self.DISABLED
+            self.show_header_button['state'] = self.DISABLED
+            self.run_reduction_alignment_button['state'] = self.DISABLED
+            self.proceed_to_photometry_button['state'] = self.DISABLED
+            self.proceed_to_fitting_button['state'] = self.DISABLED
+            self.observing_planner_button['state'] = self.NORMAL
+            self.my_profile_button['state'] = self.NORMAL
 
         else:
 
-            self.directory_entry['state'] = NORMAL
+            self.directory_entry['state'] = self.NORMAL
 
             if self.update_directory.get():
 
@@ -279,23 +271,23 @@ class ReductionWindow(MainWindow):
                 self.use_auto_target_ra_dec.set(log.read_local_log('photometry', 'use_auto_target_ra_dec'))
                 self.mid_exposure.set(log.read_local_log('photometry', 'mid_exposure'))
 
-            self.observation_files_entry['state'] = NORMAL
-            self.bias_files_entry['state'] = NORMAL
-            self.dark_files_entry['state'] = NORMAL
-            self.flat_files_entry['state'] = NORMAL
-            self.bin_fits_entry['state'] = NORMAL
-            self.show_files_button['state'] = NORMAL
-            self.observing_planner_button['state'] = NORMAL
-            self.my_profile_button['state'] = NORMAL
+            self.observation_files_entry['state'] = self.NORMAL
+            self.bias_files_entry['state'] = self.NORMAL
+            self.dark_files_entry['state'] = self.NORMAL
+            self.flat_files_entry['state'] = self.NORMAL
+            self.bin_fits_entry['state'] = self.NORMAL
+            self.show_files_button['state'] = self.NORMAL
+            self.observing_planner_button['state'] = self.NORMAL
+            self.my_profile_button['state'] = self.NORMAL
 
-            self.files_list.delete(0, END)
-            self.files_list.insert(END, '  List of files in your directory:')
-            self.files_list.insert(END, '  ')
+            self.files_list.delete(0, self.END)
+            self.files_list.insert(self.END, '  List of files in your directory:')
+            self.files_list.insert(self.END, '  ')
 
             xx = find_fits_files('*')
 
             for ii in xx:
-                self.files_list.insert(END, '  {0}'.format(str(ii).split(os.sep)[-1]))
+                self.files_list.insert(self.END, '  {0}'.format(str(ii).split(os.sep)[-1]))
 
             check_science = test_file_number(self.observation_files_entry.get())
             self.observation_files_test.set(check_science[1])
@@ -311,24 +303,24 @@ class ReductionWindow(MainWindow):
 
             if not check_science[0]:
 
-                self.exposure_time_key_entry['state'] = DISABLED
-                self.observation_date_key_entry['state'] = DISABLED
-                self.observation_time_key_entry['state'] = DISABLED
-                self.target_ra_dec_entry['state'] = DISABLED
-                self.use_auto_target_ra_dec_entry['state'] = DISABLED
-                self.mid_exposure_entry['state'] = DISABLED
-                self.show_header_button['state'] = DISABLED
-                self.run_reduction_alignment_button['state'] = DISABLED
+                self.exposure_time_key_entry['state'] = self.DISABLED
+                self.observation_date_key_entry['state'] = self.DISABLED
+                self.observation_time_key_entry['state'] = self.DISABLED
+                self.target_ra_dec_entry['state'] = self.DISABLED
+                self.use_auto_target_ra_dec_entry['state'] = self.DISABLED
+                self.mid_exposure_entry['state'] = self.DISABLED
+                self.show_header_button['state'] = self.DISABLED
+                self.run_reduction_alignment_button['state'] = self.DISABLED
 
             else:
 
-                self.target_ra_dec_entry['state'] = NORMAL
-                self.use_auto_target_ra_dec_entry['state'] = NORMAL
-                self.mid_exposure_entry['state'] = NORMAL
-                self.exposure_time_key_entry['state'] = NORMAL
-                self.observation_date_key_entry['state'] = NORMAL
-                self.observation_time_key_entry['state'] = NORMAL
-                self.show_header_button['state'] = NORMAL
+                self.target_ra_dec_entry['state'] = self.NORMAL
+                self.use_auto_target_ra_dec_entry['state'] = self.NORMAL
+                self.mid_exposure_entry['state'] = self.NORMAL
+                self.exposure_time_key_entry['state'] = self.NORMAL
+                self.observation_date_key_entry['state'] = self.NORMAL
+                self.observation_time_key_entry['state'] = self.NORMAL
+                self.show_header_button['state'] = self.NORMAL
 
                 fits = plc.open_fits(find_fits_files(self.observation_files_entry.get())[0])
 
@@ -346,15 +338,15 @@ class ReductionWindow(MainWindow):
 
                 science_header = fits[0].header
 
-                self.header_list.delete(0, END)
-                self.header_list.insert(END, '  Keywords:      Values:')
-                self.header_list.insert(END, '  ')
+                self.header_list.delete(0, self.END)
+                self.header_list.insert(self.END, '  Keywords:      Values:')
+                self.header_list.insert(self.END, '  ')
 
                 for ii in science_header:
 
                     if ii != '':
-                        self.header_list.insert(END, '  {0}{1}{2}'.format(str(ii[:10]), ' ' * (15 - len(str(ii[:10]))),
-                                                                     str(science_header[ii])))
+                        self.header_list.insert(self.END, '  {0}{1}{2}'.format(str(ii[:10]), ' ' * (15 - len(str(ii[:10]))),
+                                                                               str(science_header[ii])))
 
                 check_ra = [None, None]
                 for key in log.read_local_log_profile('target_ra_key').split(','):
@@ -374,29 +366,29 @@ class ReductionWindow(MainWindow):
                             target = plc.Target(plc.Hours(check_ra[2].replace(',', '.')),
                                                 plc.Degrees(check_dec[2].replace(',', '.')))
                             self.auto_target_ra_dec.set(target.coord)
-                            self.use_auto_target_ra_dec_entry['state'] = NORMAL
+                            self.use_auto_target_ra_dec_entry['state'] = self.NORMAL
                         elif isinstance(check_ra[2], float):
                             target = plc.Target(plc.Degrees(check_ra[2]), plc.Degrees(check_dec[2]))
                             self.auto_target_ra_dec.set(target.coord)
-                            self.use_auto_target_ra_dec_entry['state'] = NORMAL
+                            self.use_auto_target_ra_dec_entry['state'] = self.NORMAL
                         else:
                             self.auto_target_ra_dec.set('None detected')
                             self.use_auto_target_ra_dec.set(0)
-                            self.use_auto_target_ra_dec_entry['state'] = DISABLED
+                            self.use_auto_target_ra_dec_entry['state'] = self.DISABLED
                     except:
                         self.auto_target_ra_dec.set('None detected')
                         self.use_auto_target_ra_dec.set(0)
-                        self.use_auto_target_ra_dec_entry['state'] = DISABLED
+                        self.use_auto_target_ra_dec_entry['state'] = self.DISABLED
                 else:
                     self.auto_target_ra_dec.set('None detected')
                     self.use_auto_target_ra_dec.set(0)
-                    self.use_auto_target_ra_dec_entry['state'] = DISABLED
+                    self.use_auto_target_ra_dec_entry['state'] = self.DISABLED
 
                 if self.use_auto_target_ra_dec.get():
                     self.target_ra_dec.set(self.auto_target_ra_dec.get())
-                    self.target_ra_dec_entry['state'] = DISABLED
+                    self.target_ra_dec_entry['state'] = self.DISABLED
                 else:
-                    self.target_ra_dec_entry['state'] = NORMAL
+                    self.target_ra_dec_entry['state'] = self.NORMAL
 
                 check_ra_dec = test_coordinates(self.target_ra_dec_entry.get())
                 self.target_ra_dec_test.set(check_ra_dec[1])
@@ -412,7 +404,7 @@ class ReductionWindow(MainWindow):
                 if check_observation_date[0]:
                     if len(check_observation_date[2].split('T')) == 2:
                         self.observation_time_key.set(self.observation_date_key_entry.get())
-                        self.observation_time_key_entry['state'] = DISABLED
+                        self.observation_time_key_entry['state'] = self.DISABLED
 
                 check_observation_time = test_fits_keyword(self.observation_files_entry.get(),
                                                            self.observation_time_key_entry.get())
@@ -420,10 +412,10 @@ class ReductionWindow(MainWindow):
 
                 if (check_ra_dec[0] and check_exposure_time[0] and
                         check_observation_date[0] and check_observation_time[0]):
-                    self.run_reduction_alignment_button['state'] = NORMAL
+                    self.run_reduction_alignment_button['state'] = self.NORMAL
 
                 else:
-                    self.run_reduction_alignment_button['state'] = DISABLED
+                    self.run_reduction_alignment_button['state'] = self.DISABLED
 
                 if log.read_local_log('pipeline', 'reduction_complete') and log.read_local_log('pipeline',
                                                                                                'alignment_complete'):
@@ -431,16 +423,16 @@ class ReductionWindow(MainWindow):
                         all_stars = plc.open_dict('all_stars.pickle')
                         in_fov = all_stars['in_fov']
                         all_stars = all_stars['all_stars']
-                        self.proceed_to_photometry_button['state'] = NORMAL
+                        self.proceed_to_photometry_button['state'] = self.NORMAL
                     except:
-                        self.proceed_to_photometry_button['state'] = DISABLED
+                        self.proceed_to_photometry_button['state'] = self.DISABLED
                 else:
-                    self.proceed_to_photometry_button['state'] = DISABLED
+                    self.proceed_to_photometry_button['state'] = self.DISABLED
 
                 if log.read_local_log('pipeline', 'photometry_complete'):
-                    self.proceed_to_fitting_button['state'] = NORMAL
+                    self.proceed_to_fitting_button['state'] = self.NORMAL
                 else:
-                    self.proceed_to_fitting_button['state'] = DISABLED
+                    self.proceed_to_fitting_button['state'] = self.DISABLED
 
     # define actions for the different buttons, including calls to the function that updates the window
 
@@ -849,12 +841,12 @@ class PhotometryWindow(MainWindow):
         if self.running.get():
 
             for i_target in range(self.max_targets):
-                self.targets_indication_entry[i_target]['state'] = DISABLED
-                self.targets_aperture_entry[i_target]['state'] = DISABLED
+                self.targets_indication_entry[i_target]['state'] = self.DISABLED
+                self.targets_aperture_entry[i_target]['state'] = self.DISABLED
 
-            self.photometry_button['state'] = DISABLED
-            self.proceed_to_fitting_button['state'] = DISABLED
-            self.return_to_reduction_button['state'] = DISABLED
+            self.photometry_button['state'] = self.DISABLED
+            self.proceed_to_fitting_button['state'] = self.DISABLED
+            self.return_to_reduction_button['state'] = self.DISABLED
 
         else:
 
@@ -936,11 +928,11 @@ class PhotometryWindow(MainWindow):
                 self.plot_white_entry.set(self.plot_black_entry.get() + 1)
             self.image.set_clim(self.plot_black_entry.get(), self.plot_white_entry.get())
 
-            self.return_to_reduction_button['state'] = NORMAL
-            self.photometry_button['state'] = NORMAL
+            self.return_to_reduction_button['state'] = self.NORMAL
+            self.photometry_button['state'] = self.NORMAL
 
             for i_target in range(self.max_targets):
-                self.targets_indication_entry[i_target]['state'] = NORMAL
+                self.targets_indication_entry[i_target]['state'] = self.NORMAL
 
             try:
 
@@ -953,7 +945,7 @@ class PhotometryWindow(MainWindow):
                         self.targets_text[i_target].set_x(-10000)
                         self.targets_text[i_target].set_y(-10000)
 
-                        self.targets_aperture_entry[i_target]['state'] = DISABLED
+                        self.targets_aperture_entry[i_target]['state'] = self.DISABLED
 
                     else:
 
@@ -1043,29 +1035,29 @@ class PhotometryWindow(MainWindow):
                         x2 = x1 + int(2 * app) + 2
                         self.targets_peak_counts[i_target].set(int(np.max(self.fits[1].data[y1:y2, x1:x2])))
 
-                        self.targets_aperture_entry[i_target]['state'] = NORMAL
+                        self.targets_aperture_entry[i_target]['state'] = self.NORMAL
 
             except ValueError:
-                self.photometry_button['state'] = DISABLED
+                self.photometry_button['state'] = self.DISABLED
 
             for i_target in range(self.max_targets):
                 if 0 not in [self.targets_x_position[i_target].get(), self.targets_y_position[i_target].get()]:
                     try:
                         app = self.targets_aperture[i_target].get()
                     except TclError:
-                        self.photometry_button['state'] = DISABLED
+                        self.photometry_button['state'] = self.DISABLED
 
             if 0 in [self.targets_x_position[0].get(), self.targets_y_position[0].get(),
                      self.targets_x_position[1].get(), self.targets_y_position[1].get()]:
-                self.photometry_button['state'] = DISABLED
+                self.photometry_button['state'] = self.DISABLED
 
             if (log.read_local_log('pipeline', 'photometry_complete')
                and len(glob.glob(os.path.join('{0}*'.format(self.photometry_directory),
                                               self.light_curve_aperture_file))) > 0):
-                self.proceed_to_fitting_button['state'] = NORMAL
+                self.proceed_to_fitting_button['state'] = self.NORMAL
 
             else:
-                self.proceed_to_fitting_button['state'] = DISABLED
+                self.proceed_to_fitting_button['state'] = self.DISABLED
 
         self.canvas.draw()
 
@@ -1336,61 +1328,61 @@ class FittingWindow(MainWindow):
         self.manual_params_entry = self.Radiobutton(text='Enter param. manually', variable=self.manual_planet, value=True)
 
         self.planet_label = self.Label(text='Planet')
-        self.auto_planet_entry = self.Entry(textvariable=self.auto_planet, state=DISABLED)
+        self.auto_planet_entry = self.Entry(textvariable=self.auto_planet, state=self.DISABLED)
         self.planet_entry = self.Entry(textvariable=self.planet)
 
         self.target_ra_dec_label = self.Label(text='Planet RA DEC\n(hh:mm:ss +/-dd:mm:ss)')
-        self.auto_target_ra_dec_entry = self.Entry(textvariable=self.auto_target_ra_dec, state=DISABLED)
+        self.auto_target_ra_dec_entry = self.Entry(textvariable=self.auto_target_ra_dec, state=self.DISABLED)
         self.target_ra_dec_entry = self.Entry(textvariable=self.target_ra_dec)
         self.target_ra_dec_test = self.Label(text=' ')
 
         self.metallicity_label = self.Label(text='M* [Fe/H, dex]')
-        self.auto_metallicity_entry = self.Entry(textvariable=self.auto_metallicity, state=DISABLED)
+        self.auto_metallicity_entry = self.Entry(textvariable=self.auto_metallicity, state=self.DISABLED)
         self.metallicity_entry = self.Entry(textvariable=self.metallicity, validate='key')
         self.metallicity_entry['validatecommand'] = (self.metallicity_entry.register(test_float_input), '%P', '%d')
 
         self.temperature_label = self.Label(text='T* [K]')
-        self.auto_temperature_entry = self.Entry(textvariable=self.auto_temperature, state=DISABLED)
+        self.auto_temperature_entry = self.Entry(textvariable=self.auto_temperature, state=self.DISABLED)
         self.temperature_entry = self.Entry(textvariable=self.temperature, validate='key')
         self.temperature_entry['validatecommand'] = (self.temperature_entry.register(test_float_positive_input), '%P', '%d')
 
         self.logg_label = self.Label(text='log(g*) [cm/s^2]')
-        self.auto_logg_entry = self.Entry(textvariable=self.auto_logg, state=DISABLED)
+        self.auto_logg_entry = self.Entry(textvariable=self.auto_logg, state=self.DISABLED)
         self.logg_entry = self.Entry(textvariable=self.logg, validate='key')
         self.logg_entry['validatecommand'] = (self.logg_entry.register(test_float_positive_input), '%P', '%d')
 
         self.period_label = self.Label(text='Period [days]')
-        self.auto_period_entry = self.Entry(textvariable=self.auto_period, state=DISABLED)
+        self.auto_period_entry = self.Entry(textvariable=self.auto_period, state=self.DISABLED)
         self.period_entry = self.Entry(textvariable=self.period, validate='key')
         self.period_entry['validatecommand'] = (self.period_entry.register(test_float_positive_input), '%P', '%d')
 
         self.mid_time_label = self.Label(text='Mid-time [BJD_TDB]')
-        self.auto_mid_time_entry = self.Entry(textvariable=self.auto_mid_time, state=DISABLED)
+        self.auto_mid_time_entry = self.Entry(textvariable=self.auto_mid_time, state=self.DISABLED)
         self.mid_time_entry = self.Entry(textvariable=self.mid_time, validate='key')
         self.mid_time_entry['validatecommand'] = (self.mid_time_entry.register(test_float_positive_input), '%P', '%d')
 
         self.rp_over_rs_label = self.Label(text='Rp/Rs')
-        self.auto_rp_over_rs_entry = self.Entry(textvariable=self.auto_rp_over_rs, state=DISABLED)
+        self.auto_rp_over_rs_entry = self.Entry(textvariable=self.auto_rp_over_rs, state=self.DISABLED)
         self.rp_over_rs_entry = self.Entry(textvariable=self.rp_over_rs, validate='key')
         self.rp_over_rs_entry['validatecommand'] = (self.rp_over_rs_entry.register(test_float_positive_input), '%P', '%d')
 
         self.sma_over_rs_label = self.Label(text='a/Rs')
-        self.auto_sma_over_rs_entry = self.Entry(textvariable=self.auto_sma_over_rs, state=DISABLED)
+        self.auto_sma_over_rs_entry = self.Entry(textvariable=self.auto_sma_over_rs, state=self.DISABLED)
         self.sma_over_rs_entry = self.Entry(textvariable=self.sma_over_rs, validate='key')
         self.sma_over_rs_entry['validatecommand'] = (self.sma_over_rs_entry.register(test_float_positive_input), '%P', '%d')
 
         self.inclination_label = self.Label(text='Inclination [deg]')
-        self.auto_inclination_entry = self.Entry(textvariable=self.auto_inclination, state=DISABLED)
+        self.auto_inclination_entry = self.Entry(textvariable=self.auto_inclination, state=self.DISABLED)
         self.inclination_entry = self.Entry(textvariable=self.inclination, validate='key')
         self.inclination_entry['validatecommand'] = (self.inclination_entry.register(test_float_positive_input), '%P', '%d')
 
         self.eccentricity_label = self.Label(text='Eccentricity')
-        self.auto_eccentricity_entry = self.Entry(textvariable=self.auto_eccentricity, state=DISABLED)
+        self.auto_eccentricity_entry = self.Entry(textvariable=self.auto_eccentricity, state=self.DISABLED)
         self.eccentricity_entry = self.Entry(textvariable=self.eccentricity, validate='key')
         self.eccentricity_entry['validatecommand'] = (self.eccentricity_entry.register(test_float_positive_input), '%P', '%d')
 
         self.periastron_label = self.Label(text='Periastron [deg]')
-        self.auto_periastron_entry = self.Entry(textvariable=self.auto_periastron, state=DISABLED)
+        self.auto_periastron_entry = self.Entry(textvariable=self.auto_periastron, state=self.DISABLED)
         self.periastron_entry = self.Entry(textvariable=self.periastron, validate='key')
         self.periastron_entry['validatecommand'] = (self.periastron_entry.register(test_float_positive_input), '%P', '%d')
 
@@ -1531,91 +1523,91 @@ class FittingWindow(MainWindow):
 
         if self.running.get():
 
-            self.light_curve_file_entry['state'] = DISABLED
-            self.scatter_entry['state'] = DISABLED
-            self.iterations_entry['state'] = DISABLED
-            self.burn_entry['state'] = DISABLED
-            self.metallicity_entry['state'] = DISABLED
-            self.temperature_entry['state'] = DISABLED
-            self.logg_entry['state'] = DISABLED
-            self.phot_filter_entry['state'] = DISABLED
-            self.period_entry['state'] = DISABLED
-            self.mid_time_entry['state'] = DISABLED
-            self.rp_over_rs_entry['state'] = DISABLED
-            self.sma_over_rs_entry['state'] = DISABLED
-            self.inclination_entry['state'] = DISABLED
-            self.eccentricity_entry['state'] = DISABLED
-            self.periastron_entry['state'] = DISABLED
-            self.target_ra_dec_entry['state'] = DISABLED
-            self.observer_entry['state'] = DISABLED
-            self.observatory_entry['state'] = DISABLED
-            self.telescope_entry['state'] = DISABLED
-            self.camera_entry['state'] = DISABLED
-            self.planet_entry['state'] = DISABLED
-            self.manual_params_entry['state'] = DISABLED
-            self.return_to_photometry_button['state'] = DISABLED
-            self.return_to_reduction_button['state'] = DISABLED
-            self.fitting_button['state'] = DISABLED
-            self.my_profile_button['state'] = DISABLED
-            self.show_preview_button['state'] = DISABLED
+            self.light_curve_file_entry['state'] = self.DISABLED
+            self.scatter_entry['state'] = self.DISABLED
+            self.iterations_entry['state'] = self.DISABLED
+            self.burn_entry['state'] = self.DISABLED
+            self.metallicity_entry['state'] = self.DISABLED
+            self.temperature_entry['state'] = self.DISABLED
+            self.logg_entry['state'] = self.DISABLED
+            self.phot_filter_entry['state'] = self.DISABLED
+            self.period_entry['state'] = self.DISABLED
+            self.mid_time_entry['state'] = self.DISABLED
+            self.rp_over_rs_entry['state'] = self.DISABLED
+            self.sma_over_rs_entry['state'] = self.DISABLED
+            self.inclination_entry['state'] = self.DISABLED
+            self.eccentricity_entry['state'] = self.DISABLED
+            self.periastron_entry['state'] = self.DISABLED
+            self.target_ra_dec_entry['state'] = self.DISABLED
+            self.observer_entry['state'] = self.DISABLED
+            self.observatory_entry['state'] = self.DISABLED
+            self.telescope_entry['state'] = self.DISABLED
+            self.camera_entry['state'] = self.DISABLED
+            self.planet_entry['state'] = self.DISABLED
+            self.manual_params_entry['state'] = self.DISABLED
+            self.return_to_photometry_button['state'] = self.DISABLED
+            self.return_to_reduction_button['state'] = self.DISABLED
+            self.fitting_button['state'] = self.DISABLED
+            self.my_profile_button['state'] = self.DISABLED
+            self.show_preview_button['state'] = self.DISABLED
 
         elif not os.path.isfile(self.light_curve_file.get()):
 
-            self.light_curve_file_entry['state'] = NORMAL
-            self.scatter_entry['state'] = DISABLED
-            self.iterations_entry['state'] = DISABLED
-            self.burn_entry['state'] = DISABLED
-            self.metallicity_entry['state'] = DISABLED
-            self.temperature_entry['state'] = DISABLED
-            self.logg_entry['state'] = DISABLED
-            self.phot_filter_entry['state'] = DISABLED
-            self.period_entry['state'] = DISABLED
-            self.mid_time_entry['state'] = DISABLED
-            self.rp_over_rs_entry['state'] = DISABLED
-            self.sma_over_rs_entry['state'] = DISABLED
-            self.inclination_entry['state'] = DISABLED
-            self.eccentricity_entry['state'] = DISABLED
-            self.periastron_entry['state'] = DISABLED
-            self.target_ra_dec_entry['state'] = DISABLED
-            self.observer_entry['state'] = DISABLED
-            self.observatory_entry['state'] = DISABLED
-            self.telescope_entry['state'] = DISABLED
-            self.camera_entry['state'] = DISABLED
-            self.planet_entry['state'] = DISABLED
-            self.manual_params_entry['state'] = DISABLED
-            self.return_to_photometry_button['state'] = DISABLED
-            self.return_to_reduction_button['state'] = DISABLED
-            self.fitting_button['state'] = DISABLED
-            self.my_profile_button['state'] = NORMAL
-            self.show_preview_button['state'] = DISABLED
+            self.light_curve_file_entry['state'] = self.NORMAL
+            self.scatter_entry['state'] = self.DISABLED
+            self.iterations_entry['state'] = self.DISABLED
+            self.burn_entry['state'] = self.DISABLED
+            self.metallicity_entry['state'] = self.DISABLED
+            self.temperature_entry['state'] = self.DISABLED
+            self.logg_entry['state'] = self.DISABLED
+            self.phot_filter_entry['state'] = self.DISABLED
+            self.period_entry['state'] = self.DISABLED
+            self.mid_time_entry['state'] = self.DISABLED
+            self.rp_over_rs_entry['state'] = self.DISABLED
+            self.sma_over_rs_entry['state'] = self.DISABLED
+            self.inclination_entry['state'] = self.DISABLED
+            self.eccentricity_entry['state'] = self.DISABLED
+            self.periastron_entry['state'] = self.DISABLED
+            self.target_ra_dec_entry['state'] = self.DISABLED
+            self.observer_entry['state'] = self.DISABLED
+            self.observatory_entry['state'] = self.DISABLED
+            self.telescope_entry['state'] = self.DISABLED
+            self.camera_entry['state'] = self.DISABLED
+            self.planet_entry['state'] = self.DISABLED
+            self.manual_params_entry['state'] = self.DISABLED
+            self.return_to_photometry_button['state'] = self.DISABLED
+            self.return_to_reduction_button['state'] = self.DISABLED
+            self.fitting_button['state'] = self.DISABLED
+            self.my_profile_button['state'] = self.NORMAL
+            self.show_preview_button['state'] = self.DISABLED
 
         else:
 
             self.light_curve_file_entry['state'] = 'readonly'
-            self.scatter_entry['state'] = NORMAL
-            self.iterations_entry['state'] = NORMAL
-            self.burn_entry['state'] = NORMAL
+            self.scatter_entry['state'] = self.NORMAL
+            self.iterations_entry['state'] = self.NORMAL
+            self.burn_entry['state'] = self.NORMAL
             self.phot_filter_entry['state'] = 'readonly'
-            self.observer_entry['state'] = NORMAL
-            self.observatory_entry['state'] = NORMAL
-            self.telescope_entry['state'] = NORMAL
-            self.camera_entry['state'] = NORMAL
-            self.manual_params_entry['state'] = NORMAL
-            self.my_profile_button['state'] = NORMAL
-            self.show_preview_button['state'] = NORMAL
-            self.planet_entry['state'] = NORMAL
-            self.target_ra_dec_entry['state'] = NORMAL
-            self.metallicity_entry['state'] = NORMAL
-            self.temperature_entry['state'] = NORMAL
-            self.logg_entry['state'] = NORMAL
-            self.period_entry['state'] = NORMAL
-            self.mid_time_entry['state'] = NORMAL
-            self.rp_over_rs_entry['state'] = NORMAL
-            self.sma_over_rs_entry['state'] = NORMAL
-            self.inclination_entry['state'] = NORMAL
-            self.eccentricity_entry['state'] = NORMAL
-            self.periastron_entry['state'] = NORMAL
-            self.target_ra_dec_entry['state'] = NORMAL
+            self.observer_entry['state'] = self.NORMAL
+            self.observatory_entry['state'] = self.NORMAL
+            self.telescope_entry['state'] = self.NORMAL
+            self.camera_entry['state'] = self.NORMAL
+            self.manual_params_entry['state'] = self.NORMAL
+            self.my_profile_button['state'] = self.NORMAL
+            self.show_preview_button['state'] = self.NORMAL
+            self.planet_entry['state'] = self.NORMAL
+            self.target_ra_dec_entry['state'] = self.NORMAL
+            self.metallicity_entry['state'] = self.NORMAL
+            self.temperature_entry['state'] = self.NORMAL
+            self.logg_entry['state'] = self.NORMAL
+            self.period_entry['state'] = self.NORMAL
+            self.mid_time_entry['state'] = self.NORMAL
+            self.rp_over_rs_entry['state'] = self.NORMAL
+            self.sma_over_rs_entry['state'] = self.NORMAL
+            self.inclination_entry['state'] = self.NORMAL
+            self.eccentricity_entry['state'] = self.NORMAL
+            self.periastron_entry['state'] = self.NORMAL
+            self.target_ra_dec_entry['state'] = self.NORMAL
 
             if self.phot_filter.get() == 'default':
                 for key in log.read_local_log_profile('filter_key').split(','):
@@ -1689,15 +1681,15 @@ class FittingWindow(MainWindow):
                     enable_buttons = False
 
             if enable_buttons:
-                self.fitting_button['state'] = NORMAL
-                self.show_preview_button['state'] = NORMAL
+                self.fitting_button['state'] = self.NORMAL
+                self.show_preview_button['state'] = self.NORMAL
 
             else:
-                self.fitting_button['state'] = DISABLED
-                self.show_preview_button['state'] = DISABLED
+                self.fitting_button['state'] = self.DISABLED
+                self.show_preview_button['state'] = self.DISABLED
 
-            self.return_to_photometry_button['state'] = NORMAL
-            self.return_to_reduction_button['state'] = NORMAL
+            self.return_to_photometry_button['state'] = self.NORMAL
+            self.return_to_reduction_button['state'] = self.NORMAL
 
         if self.manual_planet.get():
             planet_to_plot = self.planet.get()
