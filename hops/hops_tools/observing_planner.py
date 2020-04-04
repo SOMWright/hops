@@ -39,7 +39,7 @@ class ObservingPlanner(AddOnWindow):
 
         # create widgets
 
-        self.figure, self.canvas, figure_frame = self.Figure(figsize=(6, 6), show_nav=True)
+        self.figure, self.canvas, figure_frame = self.Figure(figsize=(6, 6.5), show_nav=True)
         self.ax1 = self.figure.add_subplot(111)
         self.figure.subplots_adjust(left=0.1, right=1-0.05, bottom=0.1, top=0.85)
 
@@ -99,9 +99,11 @@ class ObservingPlanner(AddOnWindow):
             [],
         ])
 
-        self.search_object()
-
     # define the function that updates the window
+
+    def first_call(self):
+        self.search_object()
+        self.show()
 
     def update_window(self, *event):
 

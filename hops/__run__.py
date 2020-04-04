@@ -1,18 +1,5 @@
 
 
-
-
-import warnings
-warnings.filterwarnings(
-    'ignore', message='Matplotlib is building the font cache using fc-list. This may take a moment.')
-warnings.filterwarnings(
-    'ignore', message='The installed version of numexpr 2.4.4 is not supported in pandas and will be not be used')
-warnings.filterwarnings(
-    'ignore', message='Covariance of the parameters could not be estimated')
-
-import matplotlib
-matplotlib.use('TkAgg')
-
 import os
 import glob
 import numpy as np
@@ -47,8 +34,6 @@ class ReductionWindow(MainWindow):
         self.observing_planner = ObservingPlanner()
 
         # set variables, create and place widgets, main window
-
-        self.observing_planner_button = self.Button(text='OBSERVATION\nPLANNER', command=self.observing_planner.show)
 
         self.update_directory = self.BooleanVar(False)
         self.directory = self.StringVar(log.read_local_log_user('directory'))
@@ -167,7 +152,8 @@ class ReductionWindow(MainWindow):
             [[self.show_header_button, 2]],
 
             [[self.Label(text='Extra tools:'), 0]],
-            [[self.observing_planner_button, 0, 1, 2], [self.run_reduction_alignment_button, 1, 3]],
+            [[self.Button(text='OBSERVATION\nPLANNER',command=self.observing_planner.first_call), 0, 1, 2],
+             [self.run_reduction_alignment_button, 1, 3]],
             [[self.proceed_to_photometry_button, 1], [self.proceed_to_fitting_button, 2, 2]],
             [],
         ])
