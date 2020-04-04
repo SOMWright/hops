@@ -15,7 +15,7 @@ from hops.hops_tools.windows import *
 from hops.hops_tools.tests import *
 from hops.hops_tools.observing_planner import ObservingPlanner
 
-from .reduction_routines import reduction as rdr_reduction
+from .reduction_routines import Reduction
 from .alignment_routines import alignment as alr_alignment
 from .photometry_routines import photometry as phr_photometry
 from .fitting_routines import fitting as ftr_fitting
@@ -171,6 +171,47 @@ class ReductionWindow(MainWindow):
         self.header_list = self.show_header_window.Listbox(yscrollcommand=scrollbar.set, font='Courier')
         self.header_list.pack(side=self.LEFT, fill=self.BOTH, expand=True)
         scrollbar.config(command=self.header_list.yview)
+
+        # reduction progress window
+
+        # progress window
+
+        self.reduction_progress_window = ProgressWindow('HOPS - Reduction', 0, 0, 5)
+
+        self.reduction_progress_window.figure, self.reduction_progress_window.canvas, figure_frame = self.reduction_progress_window.Figure()
+        self.reduction_progress_window.ax = self.reduction_progress_window.figure.add_subplot(111)
+        self.reduction_progress_window.figure.subplots_adjust(left=0.01, right=0.99, bottom=0.01, top=0.99)
+        self.reduction_progress_window.ax.axis('off')
+
+        self.reduction_progress_window.progress_bar_1 = self.reduction_progress_window.Progressbar()
+        self.reduction_progress_window.percent_label_1 = self.reduction_progress_window.Label(text='0.0 %')
+
+        self.reduction_progress_window.progress_bar_2 = self.reduction_progress_window.Progressbar()
+        self.reduction_progress_window.percent_label_2 = self.reduction_progress_window.Label(text='0.0 %')
+
+        self.reduction_progress_window.progress_bar_3 = self.reduction_progress_window.Progressbar()
+        self.reduction_progress_window.percent_label_3 = self.reduction_progress_window.Label(text='0.0 %')
+
+        self.reduction_progress_window.label_4 = self.reduction_progress_window.Label(text="Creating master Reducing data and calculating statistics")
+        self.reduction_progress_window.progress_bar_4 = self.reduction_progress_window.Progressbar()
+        self.reduction_progress_window.percent_label_4 = self.reduction_progress_window.Label(text='0.0 %')
+
+        self.reduction_progress_window.setup_window([
+            [[figure_frame, 0, 4]],
+            [[self.reduction_progress_window.Label(text="Creating master bias"), 0, 2]],
+            [[self.reduction_progress_window.progress_bar_1, 0, 1, 1, (20, 0)],
+             [self.reduction_progress_window.percent_label_1, 1]],
+            [[self.reduction_progress_window.Label(text="Creating master dark"), 0, 2]],
+            [[self.reduction_progress_window.progress_bar_2, 0, 1, 1, (20, 0)],
+             [self.reduction_progress_window.percent_label_2, 1]],
+            [[self.reduction_progress_window.Label(text="Creating master flat"), 0, 2]],
+            [[self.reduction_progress_window.progress_bar_3, 0, 1, 1, (20, 0)],
+             [self.reduction_progress_window.percent_label_3, 1]],
+            [[self.reduction_progress_window.label_4, 0, 2]],
+            [[self.reduction_progress_window.progress_bar_4, 0, 1, 1, (20, 0)],
+             [self.reduction_progress_window.percent_label_4, 1]],
+            []
+        ], main_font='Courier')
 
         # run
 
@@ -460,6 +501,8 @@ class ReductionWindow(MainWindow):
         self.running.set(True)
         self.update_window(None)
 
+        # save inputs into the log
+
         log.write_local_log('pipeline', self.directory.get(), 'directory')
         log.write_local_log_user('directory', self.directory.get())
         log.write_local_log('pipeline', self.directory_short.get(), 'directory_short')
@@ -480,7 +523,16 @@ class ReductionWindow(MainWindow):
         log.write_local_log('pipeline_keywords', self.observation_date_key.get(), 'observation_date_key')
         log.write_local_log('pipeline_keywords', self.observation_time_key.get(), 'observation_time_key')
 
-        rdr_reduction()
+        # reduction
+        # check if reduction has been completed and ask for repeat
+
+        if log.read_local_log('pipeline', 'reduction_complete'):
+            if self.askyesno('Overwrite files', 'Reduction has been completed, do you want to run again?'):
+                log.write_local_log('pipeline', False, 'reduction_complete')
+                log.write_local_log('pipeline', False, 'alignment_complete')
+
+        process = Reduction(self.reduction_progress_window)
+        process.run()
 
         if log.read_local_log('pipeline', 'reduction_complete'):
             alr_alignment()

@@ -6,7 +6,7 @@ from tkinter import DISABLED, NORMAL, END, RIGHT, LEFT, TOP, BOTTOM, BOTH, Y, HO
 
 from tkinter.ttk import Combobox, Style, Progressbar
 from tkinter.filedialog import askdirectory
-from tkinter.messagebox import showinfo
+from tkinter.messagebox import showinfo, askyesno
 
 try:
     from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
@@ -173,13 +173,17 @@ class HOPSWindow():
 
         self.root.update_idletasks()
 
-    def after(self, *args):
+    def after(self, *args, **kwargs):
 
-        self.root.after(*args)
+        self.root.after(*args, **kwargs)
 
     def askdirectory(self):
 
         return askdirectory()
+
+    def askyesno(self, *args, **kwargs):
+
+        return askyesno(*args, **kwargs)
 
     def Figure(self, figsize=None, show_nav=False):
 
